@@ -1,0 +1,25 @@
+version: "3.4"
+services:
+  api:
+    build: ./api
+    env_file: ./api/.env
+    ports:
+      - "3000:3000"
+    depends_on: 
+      - mongodb
+    volumes:
+      - ./frontend/dist:/usr/local/var/www/html/dist
+  mongodb:
+    image: mongo:latest
+    env_file: ./api/.env
+    ports:
+      - 27017:27017
+    volumes:
+      - ./api/database/seed/user.js:/docker-entrypoint-initdb.d/user.js
+  mongo_migration:
+    build: ./api/database/migration
+    depends_on: 
+      - mongodb
+
+volumes:
+  public_resources:
